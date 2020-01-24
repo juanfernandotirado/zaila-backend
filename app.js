@@ -1,9 +1,8 @@
 let express = require('express');
 let app = express();
+bodyParser = require("body-parser");
 
-let staticMiddleware = express.static('public');
-
-app.use(staticMiddleware);
+app.use(bodyParser.json());
 
 app.use(express.urlencoded({extended:true}));
 
