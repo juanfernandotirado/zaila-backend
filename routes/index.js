@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
-const {sensorsRouter} = require('./sensors_routes')
+const {artworkRouter} = require('./artworkRouter.js');
 
-router.use('/sensors', sensorsRouter)
+router.use('/artworks', artworkRouter)
 
 exports.routerIndex = router;
