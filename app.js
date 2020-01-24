@@ -6,22 +6,8 @@ let staticMiddleware = express.static('public');
 app.use(staticMiddleware);
 
 app.use(express.urlencoded({extended:true}));
-
-
-const mongoose = require('mongoose')
-
 let conectionLog = ''
 
-mongoose.connect('mongodb+srv://juantirado:juantirado@cluster0-fuumq.gcp.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true})
-
-    .then(()=>{
-
-        console.log('*** Connected to MongoDB...')
-
-        conectionLog = '*** Connected to MongoDB...'
-
-    })
-    .catch(error=>{console.log('*** Error:' + error)})
 
 ////////////////////////////////////////////////////////////
 
