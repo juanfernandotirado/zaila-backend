@@ -3,6 +3,6 @@ const router = express.Router()
 
 const {artworkRouter} = require('./artworkRouter.js');
 
-router.use('/artworks', artworkRouter)
+router.use('/artwork', artworkRouter)
 
 exports.routerIndex = router;
