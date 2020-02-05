@@ -3,9 +3,8 @@ const {query} = require("../db/promise-mysql.js");
 
 exports.getAllArtwork = (artworkId) => {
 
-    var options = {sql: `select * from zaila_dev.artwork inner join zaila_dev.artworkDetails 
-    on artwork.artworkId = artworkDetails.artworkId
-    group by artworkDetails.artworkDetailsId`, nestTables: true};
+    var options = {sql: ` select * from zaila_dev.artwork inner join zaila_dev.artworkDetails 
+    on artwork.artworkId = artworkDetails.artworkId`, nestTables: false};
 
     return query(cp, options);
 }
