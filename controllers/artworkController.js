@@ -11,6 +11,9 @@ exports.getAllArtwork = (req, res) => {
         .catch(err => {console.log(err)})
 }
 
+exports.getArtworkById = (req, res) => {
+    
+}
 exports.createArtwork = (req, res) => {
 
     let artwork = {
