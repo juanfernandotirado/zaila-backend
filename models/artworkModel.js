@@ -1,47 +1,24 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-require("dotenv").config();
+const {cp} = require("../db/connection.js"); 
+const {query} = require("../db/promise-mysql.js");
 
-//mongoose.connect('mongodb+srv://juan:juan9823@cluster0-fuumq.gcp.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true})
+exports.getAllArtwork = (artworkId) => {
 
-mongoose.connect(process.env.DB_CONN, {useNewUrlParser: true})
-    .then(()=>console.log('Connnected!!!'))
-    .catch(err=>console.log(err));
+    var options = {sql: `select * from zaila_dev.artwork inner join zaila_dev.artworkDetails 
+    on artwork.artworkId = artworkDetails.artworkId
+    group by artworkDetails.artworkDetailsId`, nestTables: true};
 
-const ArtworkSchema = new Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    author: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        default: Date.now
-    },
-    date: {
-        type: Date,
-        default: Date.now
-    }
-
-});
-
-const Artwork = mongoose.model('artwork', ArtworkSchema);
-
-exports.getAllArtwork = () => {
-    return Artwork.find();
+    return query(cp, options);
 }
 
 exports.createArtwork = (artwork) => {
-    const newArtwork = new Artwork({
-        title: artwork.title,
-        author: artwork.author,
-        description: artwork.description
-    })
+//     const newArtwork = new Artwork({
+//         title: artwork.title,
+//         author: artwork.author,
+//         description: artwork.description
+//     })
     
-   return newArtwork.save();
+//    return newArtwork.save();
+    return null;
         
 }
 
