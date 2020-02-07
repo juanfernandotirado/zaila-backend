@@ -1,8 +1,11 @@
 let express = require('express');
 let app = express();
 bodyParser = require("body-parser");
+const cors = require('cors');
 
 app.use(bodyParser.json());
+
+app.use(cors());
 
 app.use(express.urlencoded({extended:true}));
 let conectionLog = ''
