@@ -64,12 +64,28 @@ exports.getArtworkById = (req, res) => {
 
     console.log(req.params.artworkId);
 
+    let artwork
+    let artworkDetails
+
     if(req.query.language == undefined){
 
         artworkModel.getArtworkById(req.params.artworkId)
         .then(result=>{
-            console.log('Read Result'+result)
-            res.send(result)
+            
+            artwork = result
+            return artworkModel.getArtworkDetailsByArtworkId(req.params.artworkId)
+            
+        })
+        .then(result =>{
+
+            artworkDetails = result
+
+            artwork[0].artwork.artworkDetailsArray = artworkDetails
+
+        })
+        .then(()=>{
+
+            res.send(artwork)
         })
         .catch(err => {console.log(err)})
 

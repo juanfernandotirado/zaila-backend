@@ -39,9 +39,19 @@ exports.getArtworkById = (artworkId) =>{
     console.log('Artwork ID: ' + artworkId);
     
     var options = {sql: `SELECT * FROM artwork
-    INNER JOIN artworkDetails
-    ON artwork.artworkId = artworkDetails.artworkId
-    WHERE artwork.artworkId = ${artworkId}
+    WHERE artworkId = ${artworkId}
+    `, 
+    nestTables: true};
+
+    return query(cp,options);
+}
+
+exports.getArtworkDetailsByArtworkId = (artworkId) =>{
+
+    console.log('Artwork ID: ' + artworkId);
+    
+    var options = {sql: `SELECT languageCode, description, artworkId FROM artworkDetails
+    WHERE artworkId = ${artworkId}
     `, 
     nestTables: true};
 
