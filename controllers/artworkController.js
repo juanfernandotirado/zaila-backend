@@ -1,4 +1,4 @@
-const artworkModel = require('../models/artworkmodel.js');
+const artworkModel = require('../models/artworkModel.js');
 
 exports.getAllArtwork = (req, res) => {
 
