@@ -16,16 +16,31 @@ exports.getArtworkById = (req, res) => {
 }
 exports.createArtwork = (req, res) => {
 
-    let artwork = {
-        title : req.body.title,
-        author : req.body.author,
-        description : req.body.description
-    }
-    //console.log("new artwork:"+ artwork.title)
+    let artwork = req.body.artwork
+    
+    //Save artwork record
     artworkModel.createArtwork(artwork)
         .then((result) => {
-            console.log('saved: '+ result)
-            res.send(result);    
+            
+            artwork.artworkId = result.insertId
+
+            artworkModel.createArtworkDetails(artwork.artworkDetails, artwork.artworkId)
+                .then(resultDetails => {
+
+                        artwork.artworkDetails.forEach((detail, index) => {
+                        detail.artworkDetailsId = resultDetails[index].insertId
+                    }); 
+                      
+                    console.log("===>"+JSON.stringify(artwork))
+                    res.send(artwork)
+                })
+                .catch(err=>{
+                    console.log(err)
+                    res.send({errorCode: err.code, errorMessage: err.sqlMessage});   
+                })
         })
-        .catch(err=>{console.log(err)})
+        .catch(err=>{
+            console.log(err)
+            res.send({errorCode: err.code, errorMessage: err.sqlMessage});   
+        })
 }
