@@ -12,9 +12,9 @@ exports.getAllArtwork = () => {
 
 exports.getAllDescriptions = () => {
 
-    var options = {sql: `SELECT artworkId, languageCode, description
+    var options = {sql: `SELECT *
     FROM artworkDetails`, 
-    nestTables: true};
+    nestTables: false};
 
     return query(cp, options);
 }
@@ -50,10 +50,10 @@ exports.getArtworkDetailsByArtworkId = (artworkId) =>{
 
     console.log('Artwork ID: ' + artworkId);
     
-    var options = {sql: `SELECT languageCode, description, artworkId FROM artworkDetails
+    var options = {sql: `SELECT * FROM artworkDetails
     WHERE artworkId = ${artworkId}
     `, 
-    nestTables: true};
+    nestTables: false};
 
     return query(cp,options);
 }
