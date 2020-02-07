@@ -12,9 +12,9 @@ exports.getAllArtwork = () => {
 
 exports.getAllDescriptions = () => {
 
-    var options = {sql: `SELECT artworkId, languageCode, description
+    var options = {sql: `SELECT *
     FROM artworkDetails`, 
-    nestTables: true};
+    nestTables: false};
 
     return query(cp, options);
 }
@@ -39,11 +39,21 @@ exports.getArtworkById = (artworkId) =>{
     console.log('Artwork ID: ' + artworkId);
     
     var options = {sql: `SELECT * FROM artwork
-    INNER JOIN artworkDetails
-    ON artwork.artworkId = artworkDetails.artworkId
-    WHERE artwork.artworkId = ${artworkId}
+    WHERE artworkId = ${artworkId}
     `, 
     nestTables: true};
+
+    return query(cp,options);
+}
+
+exports.getArtworkDetailsByArtworkId = (artworkId) =>{
+
+    console.log('Artwork ID: ' + artworkId);
+    
+    var options = {sql: `SELECT * FROM artworkDetails
+    WHERE artworkId = ${artworkId}
+    `, 
+    nestTables: false};
 
     return query(cp,options);
 }

@@ -25,15 +25,18 @@ exports.getAllArtwork = (req, res) => {
         .then(result=>{
             detailsArray = result
 
+            console.log('Details: ' + JSON.stringify(detailsArray));
+            
+
             //3.1 Map the artworks to append the respective array of details
             let finalResponse = artworksArray.map(item=>{
 
                 let respectiveDetailsArray = detailsArray.filter(detail=>{
-                    return item.artwork.artworkId == detail.artworkDetails.artworkId
+                    return item.artwork.artworkId == detail.artworkId
                 })
 
                 //3.1.1 Appending the array to the details array as a new property of the artwork
-                item.artwork.artworkDetailsArray = respectiveDetailsArray
+                item.artwork.artworkDetails = respectiveDetailsArray
 
                 return item
 
@@ -64,12 +67,28 @@ exports.getArtworkById = (req, res) => {
 
     console.log(req.params.artworkId);
 
+    let artwork
+    let artworkDetails
+
     if(req.query.language == undefined){
 
         artworkModel.getArtworkById(req.params.artworkId)
         .then(result=>{
-            console.log('Read Result'+result)
-            res.send(result)
+            
+            artwork = result
+            return artworkModel.getArtworkDetailsByArtworkId(req.params.artworkId)
+            
+        })
+        .then(result =>{
+
+            artworkDetails = result
+
+            artwork[0].artwork.artworkDetails = artworkDetails
+
+        })
+        .then(()=>{
+
+            res.send(artwork)
         })
         .catch(err => {console.log(err)})
 
