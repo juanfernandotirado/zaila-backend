@@ -19,17 +19,14 @@ exports.getAllDescriptions = () => {
     return query(cp, options);
 }
 
-exports.getArtworkBySensorId = (sensorId,languageCode) =>{
+exports.getArtworkBySensorId = (sensorId) =>{
 
     console.log('Sensor ID: ' + sensorId);
-    console.log('Language: ' + languageCode);
     
     var options = {sql: `SELECT * FROM artwork
-    INNER JOIN artworkDetails 
-    ON artwork.artworkId = artworkDetails.artworkId
-    WHERE artwork.sensorId = "${sensorId}" AND artworkDetails.languageCode = "${languageCode}"
+    WHERE artwork.sensorId = "${sensorId}"
     `, 
-    nestTables: true};
+    nestTables: false};
 
     return query(cp,options);
 }
@@ -46,16 +43,32 @@ exports.getArtworkById = (artworkId) =>{
     return query(cp,options);
 }
 
-exports.getArtworkDetailsByArtworkId = (artworkId) =>{
+exports.getArtworkDetailsByArtworkId = (artworkId, language) =>{
 
     console.log('Artwork ID: ' + artworkId);
-    
-    var options = {sql: `SELECT * FROM artworkDetails
-    WHERE artworkId = ${artworkId}
-    `, 
-    nestTables: false};
+    console.log('Artwork ID: ' + language);
 
-    return query(cp,options);
+    if(!language){
+
+        var options = {sql: `SELECT * FROM artworkDetails
+        WHERE artworkId = ${artworkId}
+        `, 
+        nestTables: false};
+    
+        return query(cp,options);
+
+    }else {
+
+        var options = {sql: `SELECT * FROM artworkDetails
+        WHERE artworkId = ${artworkId} AND languageCode = '${language}'
+        `, 
+        nestTables: false};
+    
+        return query(cp,options);
+
+    }
+    
+    
 }
 
 exports.getArtworkByIdAndLanguage = (artworkId,languageCode) =>{

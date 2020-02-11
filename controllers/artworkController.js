@@ -48,11 +48,28 @@ exports.getAllArtwork = (req, res) => {
         .catch(err => {console.log(err)})
     }else{
         console.log('*** Get Artwork By Sensor Id & Language Code ***');
+
+        let artwork
+        let detailsArray
         
-        artworkModel.getArtworkBySensorId(req.query.sensorId, req.query.language)
+        artworkModel.getArtworkBySensorId(req.query.sensorId)
         .then(result=>{
-            console.log('Read Result'+result)
-            res.send(result)
+            console.log('getArtworkBySensorId: '+result)
+            artwork = result
+
+            return artworkModel.getArtworkDetailsByArtworkId(artwork[0].artworkId, req.query.language)
+        })
+        .then(result =>{
+
+            detailsArray = result
+
+        })
+        .then(result =>{
+
+            artwork[0].artworkDetails = detailsArray
+
+            res.send(artwork)
+
         })
         .catch(err => {console.log(err)})
         
@@ -96,7 +113,15 @@ exports.getArtworkById = (req, res) => {
 
         artworkModel.getArtworkByIdAndLanguage(req.params.artworkId, req.query.language)
         .then(result=>{
-            console.log('Read Result'+result)
+
+            let artworkDetails = []
+
+            result[0].artwork.artworkDetails= artworkDetails
+
+            result[0].artwork.artworkDetails.push(result[0].artworkDetails)
+
+            delete result[0].artworkDetails
+
             res.send(result)
         })
         .catch(err => {console.log(err)})
