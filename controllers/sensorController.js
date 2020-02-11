@@ -21,7 +21,15 @@ exports.getSensors = (req, res)=>{
             }
         });
 
-        res.send(result)
+        if(result.length > 1){
+
+            res.send({ data : result})
+
+        }else {
+
+            res.send({ data : result[0]})
+
+        }
 
 
     })
