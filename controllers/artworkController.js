@@ -68,7 +68,7 @@ exports.getAllArtwork = (req, res) => {
 
             artwork[0].artworkDetails = detailsArray
 
-            res.send(artwork)
+            res.send({data:artwork[0]})
 
         })
         .catch(err => {console.log(err)})
