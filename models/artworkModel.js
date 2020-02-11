@@ -5,7 +5,7 @@ exports.getAllArtwork = () => {
 
     var options = {sql: `SELECT *
     FROM artwork`, 
-    nestTables: false};
+    nestTables: true};
 
     return query(cp, options);
 }

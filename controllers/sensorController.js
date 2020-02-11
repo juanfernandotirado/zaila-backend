@@ -5,92 +5,114 @@ exports.getSensors = (req, res)=>{
 
     console.log('Sensor ID: ' + req.params.id);
 
-    if (req.params.id == undefined){
+    sensorModel.getSensors(req.params.id, req.query.status)
+    .then(result => {        
 
-    let sensorsArray = []
-    let finalSensorsArray = []
+        result.forEach(item => {
+            if(!item.artwork.artworkId){
 
-    console.log('**** Get All Sensors ****')
-    sensorModel.getAllSensors()
-    .then(result =>{
+                item.sensor.status = 'Available'
+                delete item.artwork
 
-        sensorsArray = result
+            }else {
 
-        return artworkModel.getAllArtwork()
+                item.sensor.status = 'linked'
+
+            }
+        });
+
+        res.send(result)
+
 
     })
-    .then(result=>{
+    .catch(err => {console.log(err)})
 
-        sensorsArray.forEach(sensor =>{
+//     if (req.params.id == undefined){
 
-            result.forEach(artwork => {
+//     let sensorsArray = []
+//     let finalSensorsArray = []
 
-                console.log('NFCSensor = ' + sensor.nfcSensorId + ' ------ ArtworkSensor = ' + artwork.sensorId);
+//     console.log('**** Get All Sensors ****')
+//     sensorModel.getAllSensors()
+//     .then(result =>{
 
-                if(sensor.nfcSensorId == artwork.sensorId){
+//         sensorsArray = result
+
+//         return artworkModel.getAllArtwork()
+
+//     })
+//     .then(result=>{
+
+//         sensorsArray.forEach(sensor =>{
+
+//             result.forEach(artwork => {
+
+//                 console.log('NFCSensor = ' + sensor.nfcSensorId + ' ------ ArtworkSensor = ' + artwork.sensorId);
+
+//                 if(sensor.nfcSensorId == artwork.sensorId){
                     
-                    sensor.status = 'linked'
-                    sensor.title = artwork.title
-                    sensor.artworkId = artwork.artworkId
-                    sensor.exhibitionId = artwork.exhibitionId
+//                     sensor.status = 'linked'
+//                     sensor.title = artwork.title
+//                     sensor.artworkId = artwork.artworkId
+//                     sensor.exhibitionId = artwork.exhibitionId
 
-                    finalSensorsArray.push(sensor)
-
-
-                }else {
-
-                    sensor.status = 'available'
-
-                    finalSensorsArray.push(sensor)
-
-                }
-
-            })
-        })
-
-        res.send(sensorsArray)
-    })
-    .catch(err => {console.log(err)})
+//                     finalSensorsArray.push(sensor)
 
 
-}else{
+//                 }else {
 
-    console.log('**** Get Single Sensors By Id ****')
+//                     sensor.status = 'available'
 
-    let sensorResult
+//                     finalSensorsArray.push(sensor)
 
-    sensorModel.getSingleSensorById(req.params.id)
-    .then(result=>{
+//                 }
 
-        sensorResult = result[0]
+//             })
+//         })
 
-        return artworkModel.getArtworkBySensorId(sensorResult.nfcSensorId)
+//         res.send(sensorsArray)
+//     })
+//     .catch(err => {console.log(err)})
 
-    })
-    .then(result =>{
 
-        if (result.length == 0){
-            sensorResult.status = "available"
-        }else {
+//     }else{
 
-            sensorResult.status = "linked"
-            sensorResult.title = result[0].title
-            sensorResult.artworkId = result[0].artworkId
-            sensorResult.exhibitionId = result[0].exhibitionId
+//     console.log('**** Get Single Sensors By Id ****')
 
-        }
+//     let sensorResult
 
-        res.send(sensorResult)
+//     sensorModel.getSingleSensorById(req.params.id)
+//     .then(result=>{
 
-    })
-    // .then(result =>{
+//         sensorResult = result[0]
 
-    //     res.send(sensorResult)
+//         return artworkModel.getArtworkBySensorId(sensorResult.nfcSensorId)
 
-    // })
-    .catch(err => {console.log(err)})
+//     })
+//     .then(result =>{
 
-}
+//         if (result.length == 0){
+//             sensorResult.status = "available"
+//         }else {
+
+//             sensorResult.status = "linked"
+//             sensorResult.title = result[0].title
+//             sensorResult.artworkId = result[0].artworkId
+//             sensorResult.exhibitionId = result[0].exhibitionId
+
+//         }
+
+//         res.send(sensorResult)
+
+//     })
+//     // .then(result =>{
+
+//     //     res.send(sensorResult)
+
+//     // })
+//     .catch(err => {console.log(err)})
+
+// }
     
 }
 

@@ -1,22 +1,34 @@
-const {cp} = require("../db/connection.js"); 
-const {query} = require("../db/promise-mysql.js");
+const { cp } = require("../db/connection.js");
+const { query } = require("../db/promise-mysql.js");
 
-exports.getAllSensors = () => {
+exports.getSensors = (sensorId, status) => {
+
+    console.log('Status Requested: ' + status);
 
     console.log('Sensor Model Reached!!!');
-    
-    var options = `SELECT * FROM nfcSensor`
+
+    let sqlQuery = `SELECT sensor.nfcSensorId as sensorId, artwork.artworkId, artwork.title, artwork.exhibitionId
+    FROM nfcSensor as sensor
+    LEFT JOIN artwork on sensorId = nfcSensorId`
+
+    if (sensorId) {
+
+        sqlQuery += ` WHERE sensor.nfcSensorId = '${sensorId}'`
+
+    }
+
+    if (status == 'available'){
+
+        sqlQuery += ` WHERE artworkId is null`
+
+    }else if(status == 'linked'){
+
+        sqlQuery += ` WHERE artworkId is not null`
+
+    }
+
+    var options = { sql: sqlQuery, nestTables: true }
 
     return query(cp, options)
 }
 
-exports.getSingleSensorById = (sensorId) => {
-
-    console.log('Sensor Model Reached!!!');
-    
-    var options = `SELECT *
-    FROM nfcSensor
-    WHERE nfcSensorId = "${sensorId}"`
-
-    return query(cp, options)
-}

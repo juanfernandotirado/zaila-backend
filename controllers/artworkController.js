@@ -113,7 +113,15 @@ exports.getArtworkById = (req, res) => {
 
         artworkModel.getArtworkByIdAndLanguage(req.params.artworkId, req.query.language)
         .then(result=>{
-            console.log('Read Result'+result)
+
+            let artworkDetails = []
+
+            result[0].artwork.artworkDetails= artworkDetails
+
+            result[0].artwork.artworkDetails.push(result[0].artworkDetails)
+
+            delete result[0].artworkDetails
+
             res.send(result)
         })
         .catch(err => {console.log(err)})
