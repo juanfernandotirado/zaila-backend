@@ -13,7 +13,7 @@ exports.getAllArtwork = (req, res) => {
         console.log("*** Get All ***")
 
         //1. Get all artworks
-        artworkModel.getAllArtwork()
+        artworkModel.getAllArtwork(req.query.search)
 
         //2. Store the artworks and get all descriptions
         .then(result=>{
@@ -23,10 +23,7 @@ exports.getAllArtwork = (req, res) => {
 
         //3. Store the descriptions
         .then(result=>{
-            detailsArray = result
-
-            console.log('Details: ' + JSON.stringify(detailsArray));
-            
+            detailsArray = result 
 
             //3.1 Map the artworks to append the respective array of details
             let finalResponse = artworksArray.map(item=>{
@@ -42,11 +39,15 @@ exports.getAllArtwork = (req, res) => {
 
             })
 
+            console.log('*** Search Returned ***');
+            
+
             res.send({ 'data':finalResponse} )
 
         })
         .catch(err => {console.log(err)})
-    }else{
+
+    }else {
         console.log('*** Get Artwork By Sensor Id & Language Code ***');
 
         let artwork
@@ -105,7 +106,7 @@ exports.getArtworkById = (req, res) => {
         })
         .then(()=>{
 
-            res.send(artwork)
+            res.send({data: artwork[0]})
         })
         .catch(err => {console.log(err)})
 
@@ -122,7 +123,7 @@ exports.getArtworkById = (req, res) => {
 
             delete result[0].artworkDetails
 
-            res.send(result)
+            res.send({data: result[0]})
         })
         .catch(err => {console.log(err)})
 

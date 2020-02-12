@@ -1,13 +1,30 @@
 const {cp} = require("../db/connection.js"); 
 const {query} = require("../db/promise-mysql.js");
 
-exports.getAllArtwork = () => {
+exports.getAllArtwork = (search) => {
 
-    var options = {sql: `SELECT *
-    FROM artwork`, 
-    nestTables: true};
+    let sqlQuery = `SELECT *
+    FROM artwork`
 
-    return query(cp, options);
+    if(!search){
+
+        let options = {sql: sqlQuery, nestTables: true};
+
+        return query(cp, options);
+
+    }else if(search){
+        console.log('*** Artwork Search Reached ***');
+        console.log('Key word: ' + search);
+
+        let options = {sql: `SELECT * 
+        FROM artwork 
+        WHERE title like '%${search}%' or artistName like '%${search}%'`,
+        nestTables: true};
+
+        return query(cp, options);
+
+    }
+ 
 }
 
 exports.getAllDescriptions = () => {
@@ -46,7 +63,7 @@ exports.getArtworkById = (artworkId) =>{
 exports.getArtworkDetailsByArtworkId = (artworkId, language) =>{
 
     console.log('Artwork ID: ' + artworkId);
-    console.log('Artwork ID: ' + language);
+    console.log('Language Artwork ID: ' + language);
 
     if(!language){
 
