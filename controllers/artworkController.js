@@ -42,9 +42,7 @@ exports.getAllArtwork = (req, res) => {
                 console.log('*** Search Returned ***');
 
                 if (finalResponse.length == 0) {
-                    res.send({ Message: 'No matches found for title or artist' })
-                } else if (finalResponse.length == 1) {
-                    res.send({ 'data': finalResponse[0].artwork })
+                    res.send({ message: 'No matches found for title or artist', 'data': finalResponse })
                 } else {
                     res.send({ 'data': finalResponse })
                 }
