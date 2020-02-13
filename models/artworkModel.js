@@ -150,3 +150,55 @@ exports.createArtworkDetails = (artworkDetails, artworkId) => {
     console.log("sql insert artwork Detail: " + options.sql)
     return query(cp, options)
 }
+
+exports.updateArtwork = (artwork, artworkDetails) => {
+    console.log('**** Update Artwork Reached ****');
+
+    let sqlQuery = ""
+
+    if(artwork.artworkId){
+
+        sqlQuery = `UPDATE artwork SET ` 
+
+        if(artwork.exhibitionId){ sqlQuery+= `exhibitionId = ${artwork.exhibitionId},`}
+        if(artwork.sensorId){ sqlQuery+= `sensorId = '${artwork.sensorId}',`}
+        if(artwork.title){ sqlQuery+= `title = '${artwork.title}',`}
+        if(artwork.imageURL){ sqlQuery+= `imageURL = '${artwork.imageURL}',`}
+        if(artwork.artistName){ sqlQuery+= `artistName = '${artwork.artistName}',`}
+        if(artwork.media){ sqlQuery+= `media = '${artwork.media}',`}
+        if(artwork.year){ sqlQuery+= `year = '${artwork.year}',`}
+    
+    
+        sqlQuery = sqlQuery.slice(0, -1); 
+    
+        sqlQuery += ` WHERE artworkId = ${artwork.artworkId};`
+
+    }
+
+
+    if(artworkDetails){
+
+        artworkDetails.forEach(detail =>{
+
+            sqlQuery+= `UPDATE artworkDetails SET `
+
+            if(detail.description){sqlQuery+= `description = '${detail.description}',`}
+            if(detail.languageCode){sqlQuery+= `languageCode = '${detail.languageCode}',`}
+
+
+            sqlQuery = sqlQuery.slice(0, -1); 
+
+            sqlQuery += ` WHERE artworkDetailsId = ${detail.artworkDetailsId};`
+
+        })
+
+        
+
+    }
+
+    let options = {sql: sqlQuery};
+
+    console.log("sql update artwork: " + options.sql)
+    return query(cp, options)
+
+}
