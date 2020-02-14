@@ -160,18 +160,18 @@ exports.updateArtwork = (artwork, artworkDetails) => {
 
         sqlQuery = `UPDATE artwork SET ` 
 
-        if(artwork.exhibitionId){ sqlQuery+= `exhibitionId = ${artwork.exhibitionId},`}
-        if(artwork.sensorId){ sqlQuery+= `sensorId = '${artwork.sensorId}',`}
-        if(artwork.title){ sqlQuery+= `title = '${artwork.title}',`}
-        if(artwork.imageURL){ sqlQuery+= `imageURL = '${artwork.imageURL}',`}
-        if(artwork.artistName){ sqlQuery+= `artistName = '${artwork.artistName}',`}
-        if(artwork.media){ sqlQuery+= `media = '${artwork.media}',`}
-        if(artwork.year){ sqlQuery+= `year = '${artwork.year}',`}
+        if(artwork.exhibitionId){ sqlQuery+= `exhibitionId = ${cp.escape(artwork.exhibitionId)},`}
+        if(artwork.sensorId){ sqlQuery+= `sensorId = ${cp.escape(artwork.sensorId)},`}
+        if(artwork.title){ sqlQuery+= `title = ${cp.escape(artwork.title)},`}
+        if(artwork.imageURL){ sqlQuery+= `imageURL = ${cp.escape(artwork.imageURL)},`}
+        if(artwork.artistName){ sqlQuery+= `artistName = ${cp.escape(artwork.artistName)},`}
+        if(artwork.media){ sqlQuery+= `media = ${cp.escape(artwork.media)},`}
+        if(artwork.year){ sqlQuery+= `year = ${cp.escape(artwork.year)},`}
     
     
         sqlQuery = sqlQuery.slice(0, -1); 
     
-        sqlQuery += ` WHERE artworkId = ${artwork.artworkId};`
+        sqlQuery += ` WHERE artworkId = ${cp.escape(artwork.artworkId)};`
 
     }
 
@@ -182,13 +182,13 @@ exports.updateArtwork = (artwork, artworkDetails) => {
 
             sqlQuery+= `UPDATE artworkDetails SET `
 
-            if(detail.description){sqlQuery+= `description = '${detail.description}',`}
-            if(detail.languageCode){sqlQuery+= `languageCode = '${detail.languageCode}',`}
+            if(detail.description){sqlQuery+= `description = ${cp.escape(detail.description)},`}
+            if(detail.languageCode){sqlQuery+= `languageCode = ${cp.escape(detail.languageCode)},`}
 
 
             sqlQuery = sqlQuery.slice(0, -1); 
 
-            sqlQuery += ` WHERE artworkDetailsId = ${detail.artworkDetailsId};`
+            sqlQuery += ` WHERE artworkDetailsId = ${cp.escape(detail.artworkDetailsId)};`
 
         })
 
