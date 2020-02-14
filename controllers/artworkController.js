@@ -165,3 +165,18 @@ exports.createArtwork = (req, res) => {
             res.send({ errorCode: err.code, errorMessage: err.sqlMessage });
         })
 }
+
+exports.updateArtwork = (req,res) => {
+
+    artworkModel.updateArtwork(req.body.artwork, req.body.artwork.artworkDetails)
+    .then(result =>{
+
+        res.send(req.body.artwork)
+
+    })
+    .catch(err => {
+        console.log(err)
+        res.send({ errorCode: err.code, errorMessage: err.sqlMessage });
+    })
+
+}

@@ -15,4 +15,8 @@ router.get('/:artworkId', artworkController.getArtworkById);
 
 router.post('/', artworkController.createArtwork)
 
+router.put('/', artworkController.updateArtwork)
+
+
+
 exports.artworkRouter = router;
