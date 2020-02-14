@@ -13,6 +13,7 @@ exports.getSensors = (req, res)=>{
 
                 item.sensor.status = 'Available'
                 delete item.artwork
+                delete item.exhibition
 
             }else {
 
