@@ -33,7 +33,8 @@ app.get('*', (req, res, next) => {
 
 let errorHandler = (error, req, res, next) => {
     console.log(error);
-    res.status(error.status).render('error', { error: error });
+    res.status((error.status != undefined ? error.status : "500"));
+    res.send(error)
 }
 
 app.use(errorHandler);
