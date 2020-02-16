@@ -1,4 +1,6 @@
 const artworkModel = require('../models/artworkModel.js');
+const {validationResult} = require('express-validator');
+const {body} = require('express-validator')
 
 exports.getAllArtwork = (req, res) => {
 
@@ -137,6 +139,15 @@ exports.getArtworkById = (req, res) => {
 
 exports.createArtwork = (req, res) => {
 
+    const errors = validationResult(req); // Finds the validation errors in this request and wraps them in an object with handy functions
+
+    if (!errors.isEmpty()) {
+        console.log("errors in validation: ", errors.array())
+        res.status(422);
+        res.send({ errors: errors.array()})
+        return;
+    }
+
     let artwork = req.body.artwork
 
     //Save artwork record
@@ -145,20 +156,17 @@ exports.createArtwork = (req, res) => {
 
             artwork.artworkId = result.insertId
 
-            artworkModel.createArtworkDetails(artwork.artworkDetails, artwork.artworkId)
-                .then(resultDetails => {
+            return artworkModel.createArtworkDetails(artwork.artworkDetails, artwork.artworkId)
+        })
+        .then(resultDetails => {
 
-                    artwork.artworkDetails.forEach((detail, index) => {
-                        detail.artworkDetailsId = resultDetails[index].insertId
-                    });
+            artwork.artworkDetails.forEach((detail, index) => {
+                detail.artworkDetailsId = resultDetails[index].insertId
+            });
 
-                    console.log("===>" + JSON.stringify(artwork))
-                    res.send(artwork)
-                })
-                .catch(err => {
-                    console.log(err)
-                    res.send({ errorCode: err.code, errorMessage: err.sqlMessage });
-                })
+            console.log("===>" + JSON.stringify(artwork))
+            res.send(artwork)
+
         })
         .catch(err => {
             console.log(err)
@@ -167,6 +175,15 @@ exports.createArtwork = (req, res) => {
 }
 
 exports.updateArtwork = (req,res) => {
+
+    const errors = validationResult(req); // Finds the validation errors in this request and wraps them in an object with handy functions
+
+    if (!errors.isEmpty()) {
+        console.log("errors in validation: ", errors.array())
+        res.status(422);
+        res.send({ errors: errors.array()})
+        return;
+    }
 
     artworkModel.updateArtwork(req.body.artwork, req.body.artwork.artworkDetails)
     .then(result =>{
@@ -179,4 +196,48 @@ exports.updateArtwork = (req,res) => {
         res.send({ errorCode: err.code, errorMessage: err.sqlMessage });
     })
 
+}
+
+exports.validate = (method) => {
+    switch (method) {
+        case 'createArtwork': {
+            return [ 
+                body('artwork', 'artwork object is mandatory').exists(),
+                body('artwork.exhibitionId', 'exhibitionId is mandatory').not().isEmpty(),
+                body('artwork.sensorId', 'sensorId is mandatory').not().isEmpty(),
+                body('artwork.title', 'title is mandatory').not().isEmpty(),
+                body('artwork.imageURL', 'imageURL is mandatory').not().isEmpty(),
+                body('artwork.artworkDetails', 'artworkDetails must have at least one item').not().isEmpty()
+            ]   
+        }
+        case 'updateArtwork': {
+            return [ 
+                body('artwork', 'artwork object is mandatory').exists(),
+                body('artwork.artworkId', 'artworkId is mandatory').not().isEmpty(),
+                body('artwork.exhibitionId', 'exhibitionId is mandatory').not().isEmpty(),
+                body('artwork.sensorId', 'sensorId is mandatory').not().isEmpty(),
+                body('artwork.title', 'title is mandatory').not().isEmpty(),
+                body('artwork.imageURL', 'imageURL is mandatory').not().isEmpty(),
+                body('artwork.artworkDetails', 'artworkDetails must have at least one item').not().isEmpty(),
+                body('artwork.artworkDetails').custom((value, { req }) => {
+                    let artworkDetails = value
+                    
+                    console.log("test",artworkDetails)
+
+                    for (let i = 0; i < artworkDetails.length; i++) {
+                        if (artworkDetails[i].artworkDetailsId == undefined){
+                            console.log("test",(artworkDetails[i].artworkDetailsId))
+                            throw new Error('artworkDetails.artworkDetailsId is mandatory');
+                        }
+                        else if (artworkDetails[i].artworkDetailsId.length == 0) {
+                            console.log("test===",(artworkDetails[i].artworkDetailsId))
+                            throw new Error('artworkDetails.artworkDetailsId is mandatory');    
+                        } 
+                    }
+                    return true;
+                })
+                //add new validation for update here
+            ]   
+        }
+    }
 }
