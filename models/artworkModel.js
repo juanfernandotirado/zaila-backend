@@ -37,7 +37,7 @@ exports.getArtworkBySensorId = (sensorId) => {
 
     var options = {
         sql: `SELECT * FROM artwork
-    WHERE artwork.sensorId = "${sensorId}"
+    WHERE artwork.sensorId = ${cp.escape(sensorId)}
     `,
         nestTables: false
     };
@@ -51,7 +51,7 @@ exports.getArtworkById = (artworkId) => {
 
     var options = {
         sql: `SELECT * FROM artwork
-    WHERE artworkId = ${artworkId}
+    WHERE artworkId = ${cp.escape(artworkId)}
     `,
         nestTables: true
     };
@@ -68,7 +68,7 @@ exports.getArtworkDetailsByArtworkId = (artworkId, language) => {
 
         var options = {
             sql: `SELECT * FROM artworkDetails
-        WHERE artworkId = ${artworkId}
+        WHERE artworkId = ${cp.escape(artworkId)}
         `,
             nestTables: false
         };
@@ -79,7 +79,7 @@ exports.getArtworkDetailsByArtworkId = (artworkId, language) => {
 
         var options = {
             sql: `SELECT * FROM artworkDetails
-        WHERE artworkId = ${artworkId} AND languageCode = '${language}'
+        WHERE artworkId = ${cp.escape(artworkId)} AND languageCode = ${cp.escape(language)}
         `,
             nestTables: false
         };
@@ -100,7 +100,7 @@ exports.getArtworkByIdAndLanguage = (artworkId, languageCode) => {
         sql: `SELECT * FROM artwork
     INNER JOIN artworkDetails
     ON artwork.artworkId = artworkDetails.artworkId
-    WHERE artwork.artworkId = ${artworkId} AND artworkDetails.languageCode = "${languageCode}" 
+    WHERE artwork.artworkId = ${cp.escape(artworkId)} AND artworkDetails.languageCode = ${cp.escape(languageCode)}
     `,
         nestTables: true
     };
