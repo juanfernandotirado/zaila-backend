@@ -15,7 +15,7 @@ exports.getAllArtwork = (req, res) => {
         console.log("*** Get All ***")
 
         //1. Get all artworks
-        artworkModel.getAllArtwork(req.query.search)
+        artworkModel.getAllArtwork(req.query.search, req.params.exhibitionId)
 
             //2. Store the artworks and get all descriptions
             .then(result => {
@@ -44,7 +44,7 @@ exports.getAllArtwork = (req, res) => {
                 console.log('*** Search Returned ***');
 
                 if (finalResponse.length == 0) {
-                    res.send({ message: 'No matches found for title or artist', 'data': finalResponse })
+                    res.send({ message: 'No matches found', 'data': finalResponse })
                 } else {
                     res.send({ 'data': finalResponse })
                 }

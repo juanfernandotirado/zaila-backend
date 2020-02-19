@@ -1,7 +1,7 @@
 const { cp } = require("../db/connection.js");
 const { query } = require("../db/promise-mysql.js");
 
-exports.getAllArtwork = (search) => {
+exports.getAllArtwork = (search, exhibitionId) => {
 
     let sqlQuery = `SELECT *
     FROM artwork`
@@ -11,6 +11,14 @@ exports.getAllArtwork = (search) => {
         console.log('Key word: ' + search);
 
         sqlQuery += ` WHERE title like '%${search}%' or artistName like '%${search}%'`
+
+    }
+
+    if (exhibitionId) {
+        console.log('*** Artwork By Exhibition ***');
+        console.log('Exhibition ID: : ' + exhibitionId);
+
+        sqlQuery += ` WHERE exhibitionId = ${exhibitionId}`
 
     }
 
@@ -167,6 +175,8 @@ exports.updateArtwork = (artwork, artworkDetails) => {
         if(artwork.artistName){ sqlQuery+= `artistName = ${cp.escape(artwork.artistName)},`}
         if(artwork.media){ sqlQuery+= `media = ${cp.escape(artwork.media)},`}
         if(artwork.year){ sqlQuery+= `year = ${cp.escape(artwork.year)},`}
+        if(artwork.width){ sqlQuery+= `width = ${cp.escape(artwork.with)},`}
+        if(artwork.height){ sqlQuery+= `height = ${cp.escape(artwork.height)},`}
     
     
         sqlQuery = sqlQuery.slice(0, -1); 
