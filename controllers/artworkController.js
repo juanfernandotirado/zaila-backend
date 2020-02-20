@@ -15,7 +15,7 @@ exports.getAllArtwork = (req, res) => {
         console.log("*** Get All ***")
 
         //1. Get all artworks
-        artworkModel.getAllArtwork(req.query.search)
+        artworkModel.getAllArtwork(req.query.search, req.params.exhibitionId)
 
             //2. Store the artworks and get all descriptions
             .then(result => {
@@ -44,7 +44,7 @@ exports.getAllArtwork = (req, res) => {
                 console.log('*** Search Returned ***');
 
                 if (finalResponse.length == 0) {
-                    res.send({ message: 'No matches found for title or artist', 'data': finalResponse })
+                    res.send({ message: 'No matches found', 'data': finalResponse })
                 } else {
                     res.send({ 'data': finalResponse })
                 }
@@ -221,20 +221,24 @@ exports.validate = (method) => {
                 body('artwork.artworkDetails', 'artworkDetails must have at least one item').not().isEmpty(),
                 body('artwork.artworkDetails').custom((value, { req }) => {
                     let artworkDetails = value
-                    
-                    console.log("test",artworkDetails)
 
-                    for (let i = 0; i < artworkDetails.length; i++) {
-                        if (artworkDetails[i].artworkDetailsId == undefined){
-                            console.log("test",(artworkDetails[i].artworkDetailsId))
-                            throw new Error('artworkDetails.artworkDetailsId is mandatory');
+                    console.log('*** Custom Validator Value: ' + JSON.stringify(artworkDetails));
+                    
+                        console.log("test",artworkDetails)
+
+                        for (let i = 0; i < artworkDetails.length; i++) {
+                            if (artworkDetails[i].artworkDetailsId == undefined){
+                                console.log("test",(artworkDetails[i].artworkDetailsId))
+                                throw new Error('artworkDetails.artworkDetailsId is mandatory');
+                            }
+                            else if (artworkDetails[i].artworkDetailsId.length == 0) {
+                                console.log("test===",(artworkDetails[i].artworkDetailsId))
+                                throw new Error('artworkDetails.artworkDetailsId is mandatory');    
+                            } 
                         }
-                        else if (artworkDetails[i].artworkDetailsId.length == 0) {
-                            console.log("test===",(artworkDetails[i].artworkDetailsId))
-                            throw new Error('artworkDetails.artworkDetailsId is mandatory');    
-                        } 
-                    }
-                    return true;
+
+                        return true;   
+                    
                 })
                 //add new validation for update here
             ]   
