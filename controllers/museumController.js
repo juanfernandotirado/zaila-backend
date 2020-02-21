@@ -17,8 +17,6 @@ exports.getAllMuseum = (req, res) => {
             .then(result => {
                 if (result.length == 0) {
                     res.send({ message: 'No data found', 'data': result })
-                } else if (result.length == 1) {
-                    res.send({ 'data': result[0] })
                 } else {
                     res.send({ 'data': result })
                 }
