@@ -34,7 +34,10 @@ exports.getSensors = (req, res)=>{
 
 
     })
-    .catch(err => {console.log(err)})
+    .catch(err => {
+        console.log(err)
+        res.send({ errorCode: 500, errorMessage: err.message })
+    })
     
 }
 
