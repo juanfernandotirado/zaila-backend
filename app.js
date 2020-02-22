@@ -8,14 +8,6 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use(express.urlencoded({extended:true}));
-let conectionLog = ''
-
-
-////////////////////////////////////////////////////////////
-
-app.get('/', (req, res) => {
-    res.send(conectionLog)
-});
 
 ////////////////////////////////////////////////////////////
 
@@ -25,14 +17,16 @@ app.use('/api', routerIndex)
 ////////////////////////////////////////////////////////////
 
 app.get('*', (req, res, next) => {
-    let error = new Error();
-    error.status= 404;
-    error.data = ['Error 404. Not found.'];
+    
+    let error = {
+        status : 404, 
+        data : ['Error 404. Not found.']
+    }
     next(error);
 });
 
 let errorHandler = (error, req, res, next) => {
-    console.log(error);
+    console.log('--> error Handler: ', error);
     res.status((error.status != undefined ? error.status : "500"));
     res.send(error)
 }

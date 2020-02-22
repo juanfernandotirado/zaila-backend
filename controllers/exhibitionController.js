@@ -19,7 +19,10 @@ exports.getAllExhibition = (req, res) => {
             res.send({ 'data': result})
         }
     })
-    .catch(err => { console.log(err) })
+    .catch(err => { 
+        console.log(err) 
+        res.send({ errorCode: 500, errorMessage: err.message })
+    })
 
 
 }
@@ -44,7 +47,10 @@ exports.createExhibition = (req, res) => {
 
         res.send({'data': {'exhibition': exhibition}})
     })
-    .catch(err => { console.log(err) })
+    .catch(err => { 
+        console.log(err) 
+        res.send({ errorCode: 500, errorMessage: err.message })
+    })
 
 }
 

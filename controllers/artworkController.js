@@ -50,7 +50,10 @@ exports.getAllArtwork = (req, res) => {
                 }
 
             })
-            .catch(err => { console.log(err) })
+            .catch(err => { 
+                console.log(err) 
+                res.send({ errorCode: 500, errorMessage: err.message })
+            })
 
     } else {
         console.log('*** Get Artwork By Sensor Id & Language Code ***');
@@ -77,7 +80,10 @@ exports.getAllArtwork = (req, res) => {
                 res.send({ data: artwork[0] })
 
             })
-            .catch(err => { console.log(err) })
+            .catch(err => { 
+                console.log(err) 
+                res.send({ errorCode: 500, errorMessage: err.message })
+            })
 
     }
 
@@ -97,7 +103,7 @@ exports.getArtworkById = (req, res) => {
 
         artworkModel.getArtworkById(req.params.artworkId)
             .then(result => {
-
+                console.log('--->', result)
                 artwork = result
                 return artworkModel.getArtworkDetailsByArtworkId(req.params.artworkId)
 
@@ -113,7 +119,10 @@ exports.getArtworkById = (req, res) => {
 
                 res.send({ data: artwork[0] })
             })
-            .catch(err => { console.log(err) })
+            .catch(err => { 
+                console.log('--->',err) 
+                res.send({ errorCode: 500, errorMessage: err.message })
+            })
 
     } else {
 
@@ -130,7 +139,10 @@ exports.getArtworkById = (req, res) => {
 
                 res.send({ data: result[0] })
             })
-            .catch(err => { console.log(err) })
+            .catch(err => { 
+                console.log(err) 
+                res.send({ errorCode: 500, errorMessage: err.message })
+            })
 
     }
 
@@ -176,6 +188,7 @@ exports.createArtwork = (req, res) => {
 
 exports.updateArtwork = (req,res) => {
 
+    console.log('update')
     const errors = validationResult(req); // Finds the validation errors in this request and wraps them in an object with handy functions
 
     if (!errors.isEmpty()) {

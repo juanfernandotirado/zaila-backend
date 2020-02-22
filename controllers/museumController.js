@@ -21,7 +21,10 @@ exports.getAllMuseum = (req, res) => {
                     res.send({ 'data': result })
                 }
             })
-            .catch(err => { console.log(err) })
+            .catch(err => { 
+                console.log(err) 
+                res.send({ errorCode: 500, errorMessage: err.message })
+            })
 
     } else {
 
@@ -62,7 +65,10 @@ exports.getAllMuseum = (req, res) => {
                     res.send({ 'data': museumArray })
                 }
             })
-            .catch(err => { console.log(err) })
+            .catch(err => { 
+                console.log(err) 
+                res.send({ errorCode: 500, errorMessage: err.message })
+            })
     }
 
 
