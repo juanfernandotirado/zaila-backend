@@ -18,8 +18,52 @@ exports.getAllMuseum = (req, res) => {
                 if (result.length == 0) {
                     res.send({ message: 'No data found', 'data': result })
                 } else {
-                    res.send({ 'data': result })
+
+                    result.forEach(item =>{
+                        item.museum.museum_category = item.museum_category
+                        delete item.museum.categoryId
+                        delete item.museum_category
+                    })
+
+                    museumArray = result
+
+                    return exhibitionModel.getAllExhibition()
                 }
+            })
+            .then(result =>{
+
+                museumArray.map(museumItem =>{
+
+                    let exhibitionsArray = result.filter(item => {
+                        
+                        return item.exhibition.museumId == museumItem.museum.museumId
+                    })
+
+                    let newExhibitionsArray = []
+
+                    exhibitionsArray.forEach(item =>{
+
+                        delete item.exhibition.description
+                        delete item.exhibition.museumId
+                        delete item.exhibition.imageURL
+                        delete item.exhibition.categoryId
+                        delete item.exhibition.startDate
+                        delete item.exhibition.endDate
+                        delete item.exhibition.completionXP
+                        delete item.exhibition.completionBadgeId
+
+                        newExhibitionsArray.push(item.exhibition)
+
+                    })
+
+                    museumItem.museum.exhibitionsList = newExhibitionsArray
+
+                    return museumItem
+
+                })
+
+                res.send({ 'data': museumArray })
+
             })
             .catch(err => { 
                 console.log(err) 
@@ -31,6 +75,12 @@ exports.getAllMuseum = (req, res) => {
         museumModel.getAllMuseum(museumId, city)
 
             .then(result => {
+
+                result.forEach(item =>{
+                    item.museum.museum_category = item.museum_category
+                    delete item.museum.categoryId
+                    delete item.museum_category
+                })
 
                 museumArray = result
 
