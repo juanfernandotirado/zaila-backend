@@ -98,15 +98,7 @@ exports.validate = (method) => {
         case 'updateExhibition': {
             return [ 
                 body('exhibition', 'exhibition object is mandatory').exists(),
-                body('exhibition.museumId', 'museumId is mandatory').not().isEmpty(),
-                body('exhibition.name', 'name is mandatory').not().isEmpty(),
-                body('exhibition.description', 'description is mandatory').not().isEmpty(),
-                body('exhibition.imageURL', 'imageURL is mandatory').not().isEmpty(),
-                body('exhibition.startDate', 'startDate is mandatory').not().isEmpty(),
-                body('exhibition.endDate', 'endDate is mandatory').not().isEmpty(),
-                body('exhibition.categoryId', 'categoryId is mandatory').not().isEmpty(),
-                body('exhibition.completionBadgeId', 'completionBadgeId is mandatory').not().isEmpty(),
-                body('exhibition.completionXP', 'completionXP is mandatory').not().isEmpty()
+                body('exhibition.exhibitionId', 'exhibitionId is mandatory').not().isEmpty()
             ]    
         }
     }

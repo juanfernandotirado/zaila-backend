@@ -4,11 +4,14 @@ const { query } = require("../db/promise-mysql.js");
 exports.getAllMuseum = (museumId, city) => {
 
     let sqlQuery = `SELECT *
-    FROM museum`
+    FROM museum
+    INNER JOIN museum_category
+    ON museum.categoryId = museum_category.categoryId
+    `
 
     if (museumId) {
         console.log('*** Museum By ID ***');
-        console.log('Museum ID: : ' + museumId);
+        console.log('Museum ID: ' + museumId);
 
         sqlQuery += ` WHERE museumId = ${cp.escape(museumId)}`
 
@@ -29,6 +32,22 @@ exports.getAllMuseum = (museumId, city) => {
 }
 
 exports.getHours = (museumId) => {
+
+    console.log('*** Opening Hours By Museum ID ***');
+    console.log('Museum ID: : ' + museumId);
+
+    let sqlQuery = `SELECT *
+    FROM opening_hours
+    WHERE museumId = ${cp.escape(museumId)}
+    `
+
+    let options = { sql: sqlQuery, nestTables: false };
+
+    return query(cp, options);
+
+}
+
+exports.getMuseumCategory = (museumId) => {
 
     console.log('*** Opening Hours By Museum ID ***');
     console.log('Museum ID: : ' + museumId);
