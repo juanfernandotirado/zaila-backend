@@ -11,6 +11,12 @@ app.use(express.urlencoded({extended:true}));
 
 ////////////////////////////////////////////////////////////
 
+//path /auth are public, there is no JWT in the req.header
+const { authRouter } = require('./routes/authRouter.js')
+app.use('/auth', authRouter)
+
+
+//path /api should have JWT in the request
 const { routerIndex } = require('./routes/index.js')
 app.use('/api', routerIndex)
 
