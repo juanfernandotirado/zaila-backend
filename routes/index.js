@@ -6,11 +6,13 @@ const {sensorRouter} = require('./sensorRouter.js');
 const {storageRouter} = require('./storageRouter.js');
 const {exhibitionRouter} = require('./exhibitionRouter.js');
 const {museumRouter} = require('./museumRouter.js');
+const {questRouter} = require('./questRouter.js');
 
 router.use('/artwork', artworkRouter)
 router.use('/sensor', sensorRouter)
 router.use('/storage', storageRouter)
 router.use('/exhibition', exhibitionRouter)
 router.use('/museum', museumRouter)
+router.use('/quest', questRouter)
 
 exports.routerIndex = router;
