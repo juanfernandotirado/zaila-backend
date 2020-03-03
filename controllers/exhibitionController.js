@@ -56,7 +56,8 @@ exports.getAllExhibition = (req, res) => {
 
                 exhibitionArray[0].exhibition.exhibitionProgress = exhibitionProgress
 
-                res.send(exhibitionArray)
+                res.send({'data':exhibitionArray[0]})
+                
             })
 
         }else {
