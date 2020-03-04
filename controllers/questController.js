@@ -4,8 +4,54 @@ const {body} = require('express-validator')
 
 exports.getAllQuest = (req, res) => {
 
-    res.send(questModel.getAllQuest())
-    
+    let bluetoothId = req.query.bluetoothId
+    let questId = req.params.id
+    let questArray
+
+    questModel.getAllQuest(bluetoothId,questId)
+
+    .then(result => {
+
+        questArray = result
+
+        return questModel.getArtworksArray(questId)
+
+    })
+    .then(result => {
+
+        let finalResponse = questArray.map(questItem =>{
+
+            let artworksArray = result.filter(item => {
+                // console.log('questItem ID: ' + questItem.quest.questId + '---' + item.questArtwork.questId + ' : questArtwork ID');
+                
+                return questItem.quest.questId == item.questArtwork.questId
+            })
+
+            let FinalArtworksArray = artworksArray.map(item =>{
+
+                return item.questArtwork.artworkId
+
+            })
+
+            questItem.quest.artworkIdArray = FinalArtworksArray
+
+            return questItem
+
+        })
+
+        if(finalResponse.length == 0){
+            res.send({'message': 'No data found', 'data':finalResponse})
+        }else if(finalResponse.length == 1){
+            res.send({'data':finalResponse[0]})
+        }else {
+            res.send({'data':finalResponse})
+        }
+
+    })
+    .catch(err => {
+        console.log(err)
+        res.send({ errorCode: err.code, errorMessage: err.sqlMessage });
+    })
 
 }
 
@@ -22,8 +68,8 @@ exports.createQuest = (req, res) => {
 
         })
         .then(result => {
-
-            res.send(quest)
+            
+            res.send({'data': quest})
 
         })
         .catch(err => {

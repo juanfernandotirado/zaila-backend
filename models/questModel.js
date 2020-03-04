@@ -1,11 +1,53 @@
 const { cp } = require("../db/connection.js");
 const { query } = require("../db/promise-mysql.js");
 
-exports.getAllQuest = () => {
+exports.getAllQuest = (bluetoothId, questId) => {
 
     console.log('*** Get All Quests Reached ***');
 
-    return '*** Get All Quests Reached ***'
+    let sqlQuery = `SELECT *
+    FROM quest`
+
+    if (bluetoothId) {
+        console.log('*** Quest By Bluetooth Id ***');
+        console.log('Bluetooth ID: ' + bluetoothId);
+
+        sqlQuery += ` WHERE bluetoothSensorId = ${cp.escape(bluetoothId)}`
+
+    }
+
+    if (questId) {
+        console.log('*** Quest By Quest Id ***');
+        console.log('Quest ID: ' + questId);
+
+        sqlQuery += ` WHERE questId = ${cp.escape(questId)}`
+
+    }
+
+    let options = { sql: sqlQuery, nestTables: true };
+
+    return query(cp, options);
+
+}
+
+exports.getArtworksArray = (questId) => {
+
+    console.log('*** Get ArtworksArray Reached ***');
+
+    let sqlQuery = `SELECT *
+    FROM questArtwork`
+
+    if (questId) {
+        console.log('*** Quest By Bluetooth Id ***');
+        console.log('QuestId ID: ' + questId);
+
+        sqlQuery += ` WHERE questId = ${questId}`
+
+    }
+
+    let options = { sql: sqlQuery, nestTables: true };
+
+    return query(cp, options);
 
 }
 
@@ -35,7 +77,7 @@ exports.insertQuestArtwork = (questId,artworkIdArray) => {
 
     artworkIdArray.forEach(artworkId =>{
 
-        insert += `INSERT INTO quest-artwork
+        sql += `INSERT INTO questArtwork
         (questId,
         artworkId) 
         VALUES (${cp.escape(questId)}, 
@@ -43,6 +85,6 @@ exports.insertQuestArtwork = (questId,artworkIdArray) => {
 
     })
 
-console.log("sql insert quest-artwork: " + sql)
+console.log("sql insert questArtwork: " + sql)
 return query(cp, sql)
 }
