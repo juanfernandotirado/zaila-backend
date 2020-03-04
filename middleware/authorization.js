@@ -6,7 +6,7 @@ const secret  = process.env.SECRET_PHRASE;
 const verifyJwt = (req, res, next) => {
 
     
-    console.log('Verifying authentication', req.headers)
+    //console.log('Verifying authentication', req.headers)
 
     let token = (req.headers.authorization != undefined ? req.headers.authorization.split(' ')[1] : '')
     //console.log('token---', token)

@@ -2,6 +2,7 @@ const { cp } = require("../db/connection.js");
 const { query } = require("../db/promise-mysql.js");
 
 exports.createUser = (user) => {
+    //console.log('user', user)
 
     let options = { sql: `INSERT INTO user 
             (ageGroup, 
@@ -40,6 +41,15 @@ exports.getUserById = (userId) => {
     let options = { sql: 
         `SELECT userId, preferredLanguage, name, email, autoPlayDescription, autoEnrollQuest, userXP FROM user
         where userId = ${cp.escape(userId)}`
+    , nestTables: true };
+
+    return query(cp, options);
+}
+
+exports.getUserFromEmail = (email) => {
+    let options = { sql: 
+        `SELECT userId FROM user
+        where email = ${cp.escape(email)}`
     , nestTables: true };
 
     return query(cp, options);
