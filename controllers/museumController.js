@@ -89,6 +89,14 @@ exports.getAllMuseum = (req, res) => {
             })
             .then(result => {
 
+                result.forEach(item =>{
+
+                    item.exhibition.exhibition_category = item.exhibition_category
+                    delete item.exhibition_category
+                    delete categoryId
+
+                })
+
                 let exhibitionArray = result.filter(item => {
                     return item.exhibition.museumId == museumId
                 })
@@ -100,7 +108,6 @@ exports.getAllMuseum = (req, res) => {
                 museumArray[0].museum.exhibitionsList = finalExhibitions
 
                 return museumModel.getHours(museumId)
-
 
             })
             .then(result => {
