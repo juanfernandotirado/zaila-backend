@@ -126,14 +126,18 @@ exports.createArtwork = (artwork) => {
             imageURL, 
             artistName, 
             media, 
-            year) 
+            year,
+            width,
+            height) 
     VALUES (${cp.escape(artwork.exhibitionId)}, 
             ${cp.escape(artwork.sensorId)}, 
             ${cp.escape(artwork.title)},
             ${cp.escape(artwork.imageURL)}, 
             ${cp.escape(artwork.artistName)}, 
             ${cp.escape(artwork.media)}, 
-            ${cp.escape(artwork.year)})`
+            ${cp.escape(artwork.year)},
+            ${cp.escape(artwork.width)},
+            ${cp.escape(artwork.height)})`
     };
 
     console.log("sql insert artwork: " + options.sql)
