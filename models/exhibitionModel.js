@@ -6,13 +6,14 @@ exports.getAllExhibition = (exhibitionId, search) => {
     console.log('*** Get All Exhibitions ***');
     
 
-    let sqlQuery = `SELECT * FROM exhibition`
+    let sqlQuery = `SELECT * FROM exhibition INNER JOIN exhibition_category 
+    ON exhibition.categoryId = exhibition_category.categoryId`
 
     if (exhibitionId) {
         console.log('*** Get Exhibition By Id ***');
         console.log('Exhibition ID: ' + exhibitionId);
 
-        sqlQuery += ` WHERE exhibitionId = ${cp.escape(exhibitionId)}`
+        sqlQuery += ` WHERE exhibition.exhibitionId = ${cp.escape(exhibitionId)}`
 
     }
 
@@ -42,8 +43,6 @@ exports.createExhibition = (exhibition) => {
             categoryId,
             startDate,
             endDate,
-            completionBadgeId,
-            completionXP,
             description) 
     VALUES (${cp.escape(exhibition.name)}, 
             ${cp.escape(exhibition.imageURL)}, 
@@ -51,8 +50,6 @@ exports.createExhibition = (exhibition) => {
             ${cp.escape(exhibition.categoryId)},
             ${cp.escape(exhibition.startDate)},
             ${cp.escape(exhibition.endDate)},
-            ${cp.escape(exhibition.completionBadgeId)},
-            ${cp.escape(exhibition.completionXP)},
             ${cp.escape(exhibition.description)})`
     };
 
@@ -77,22 +74,37 @@ exports.updateExhibition = (exhibition) => {
         if(exhibition.imageURL){ sqlQuery+= `imageURL = ${cp.escape(exhibition.imageURL)},`}
         if(exhibition.startDate){ sqlQuery+= `startDate = ${cp.escape(exhibition.startDate)},`}
         if(exhibition.endDate){ sqlQuery+= `endDate = ${cp.escape(exhibition.endDate)},`}
-        if(exhibition.categoryId){ sqlQuery+= `categoryId = ${cp.escape(exhibition.categoryId   )},`}
-        if(exhibition.completionBadgeId){ sqlQuery+= `completionBadgeId = ${cp.escape(exhibition.completionBadgeId)},`}
-        if(exhibition.completionXP){ sqlQuery+= `completionXP = ${cp.escape(exhibition.completionXP)},`}
-    
+        if(exhibition.categoryId){ sqlQuery+= `categoryId = ${cp.escape(exhibition.categoryId   )},`}    
     
         sqlQuery = sqlQuery.slice(0, -1); 
     
         sqlQuery += ` WHERE exhibitionId = ${cp.escape(exhibition.exhibitionId)};`
-
-        
-
     }
 
     let options = {sql: sqlQuery};
 
     console.log("sql update exhibition: " + options.sql)
     return query(cp, options)
+
+}
+
+exports.getExhibitionCategory = () => {
+    console.log('**** Get Exhibition Categories Reached ****');
+
+    let sql = `SELECT * FROM exhibition_category`
+
+    console.log("Exhibition Categories: " + sql)
+    return query(cp, sql)
+
+}
+
+exports.getTappedArtworks = (exhibitionId, userId) => {
+    console.log('**** Get Tapped Artworks in Exhibition ****');
+
+    let sql = `SELECT COUNT (*) AS artworksTapped FROM activityLog 
+    WHERE exhibitionId = ${cp.escape(exhibitionId)} AND ${cp.escape(userId)}`
+
+    console.log("Exhibition Categories: " + sql)
+    return query(cp, sql)
 
 }

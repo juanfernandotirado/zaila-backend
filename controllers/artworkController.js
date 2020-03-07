@@ -220,6 +220,8 @@ exports.validate = (method) => {
                 body('artwork.sensorId', 'sensorId is mandatory').not().isEmpty(),
                 body('artwork.title', 'title is mandatory').not().isEmpty(),
                 body('artwork.imageURL', 'imageURL is mandatory').not().isEmpty(),
+                body('artwork.width', 'width is mandatory').not().isEmpty(),
+                body('artwork.height', 'height is mandatory').not().isEmpty(),
                 body('artwork.artworkDetails', 'artworkDetails must have at least one item').not().isEmpty()
             ]   
         }

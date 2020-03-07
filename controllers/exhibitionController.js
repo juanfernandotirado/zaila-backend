@@ -1,4 +1,5 @@
 const exhibitionModel = require('../models/exhibitionModel.js');
+const artworkModel = require('../models/artworkModel.js');
 const {validationResult} = require('express-validator');
 const {body} = require('express-validator')
 
@@ -8,16 +9,69 @@ exports.getAllExhibition = (req, res) => {
     let search = req.query.search
     let exhibitionId = req.params.exhibitionId
 
+    let userId = 1
+
+    let exhibitionArray = []
+
     exhibitionModel.getAllExhibition(exhibitionId, search)
 
     .then(result =>{
-        if (result.length == 0) {
-            res.send({ message: 'No data found', 'data': result })
-        } else if (result.length == 1){
-            res.send({ 'data': result[0]})
+
+        exhibitionArray = result.map(item =>{
+
+            item.exhibition.exhibition_category = item.exhibition_category
+            delete item.exhibition.categoryId
+            delete item.exhibition_category
+
+            return item
+
+        })     
+        
+    })
+    .then(result =>{
+
+        if(exhibitionId && userId){
+
+            let artworkCount
+
+            return artworkModel.getAllArtwork(search, exhibitionId)
+            .then(result =>{
+
+                artworkCount = result.length
+
+                return exhibitionModel.getTappedArtworks(exhibitionId, userId)
+
+            })
+            .then(result =>{
+
+                let exhibitionProgress
+
+                if(result[0].artworksTapped == 0){
+
+                    exhibitionProgress = 0
+
+                }
+
+                exhibitionProgress = (result[0].artworksTapped) / artworkCount
+
+                exhibitionArray[0].exhibition.exhibitionProgress = exhibitionProgress
+
+                res.send({'data':exhibitionArray[0]})
+                
+            })
+
         }else {
-            res.send({ 'data': result})
+
+            if (exhibitionArray.length == 0) {
+                res.send({ message: 'No data found', 'data': exhibitionArray })
+            } else if (exhibitionArray.length == 1){
+                res.send({ 'data': exhibitionArray[0]})
+            }else {
+                res.send({ 'data': exhibitionArray})
+            }
+
         }
+
     })
     .catch(err => { 
         console.log(err) 
@@ -90,24 +144,29 @@ exports.validate = (method) => {
                 body('exhibition.imageURL', 'imageURL is mandatory').not().isEmpty(),
                 body('exhibition.startDate', 'startDate is mandatory').not().isEmpty(),
                 body('exhibition.endDate', 'endDate is mandatory').not().isEmpty(),
-                body('exhibition.categoryId', 'categoryId is mandatory').not().isEmpty(),
-                body('exhibition.completionBadgeId', 'completionBadgeId is mandatory').not().isEmpty(),
-                body('exhibition.completionXP', 'completionXP is mandatory').not().isEmpty()
+                body('exhibition.categoryId', 'categoryId is mandatory').not().isEmpty()
             ]   
         }
         case 'updateExhibition': {
             return [ 
                 body('exhibition', 'exhibition object is mandatory').exists(),
-                body('exhibition.museumId', 'museumId is mandatory').not().isEmpty(),
-                body('exhibition.name', 'name is mandatory').not().isEmpty(),
-                body('exhibition.description', 'description is mandatory').not().isEmpty(),
-                body('exhibition.imageURL', 'imageURL is mandatory').not().isEmpty(),
-                body('exhibition.startDate', 'startDate is mandatory').not().isEmpty(),
-                body('exhibition.endDate', 'endDate is mandatory').not().isEmpty(),
-                body('exhibition.categoryId', 'categoryId is mandatory').not().isEmpty(),
-                body('exhibition.completionBadgeId', 'completionBadgeId is mandatory').not().isEmpty(),
-                body('exhibition.completionXP', 'completionXP is mandatory').not().isEmpty()
+                body('exhibition.exhibitionId', 'exhibitionId is mandatory').not().isEmpty()
             ]    
         }
     }
+}
+
+exports.exhibitionCategory = (req,res) => {
+
+    exhibitionModel.getExhibitionCategory()
+    .then(result =>{
+
+        res.send({'data': result})
+
+    })
+    .catch(err => {
+        console.log(err)
+        res.send({ errorCode: err.code, errorMessage: err.sqlMessage });
+    })
+
 }
