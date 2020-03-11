@@ -1,4 +1,6 @@
 const artworkModel = require('../models/artworkModel.js');
+const activityLogModel = require('../models/activityLogModel.js')
+const userModel = require('../models/userModel.js')
 const {validationResult} = require('express-validator');
 const {body} = require('express-validator')
 
@@ -6,6 +8,8 @@ exports.getAllArtwork = (req, res) => {
 
     console.log(req.query.sensorId);
     console.log(req.query.language);
+
+    let user = req.body.signedUser
 
     let artworksArray
     let detailsArray
@@ -57,9 +61,11 @@ exports.getAllArtwork = (req, res) => {
 
     } else {
         console.log('*** Get Artwork By Sensor Id & Language Code ***');
+        console.log('*** User: ' + user.userId);
 
         let artwork
         let detailsArray
+        let updatedUser
 
         artworkModel.getArtworkBySensorId(req.query.sensorId)
             .then(result => {
@@ -72,12 +78,61 @@ exports.getAllArtwork = (req, res) => {
 
                 detailsArray = result
 
+                return activityLogModel.getActivityLog(user,artwork[0])
+
             })
             .then(result => {
 
-                artwork[0].artworkDetails = detailsArray
+                let XP
 
-                res.send({ data: artwork[0] })
+                if (result.length == 0){
+                    console.log('*** XP + 10');
+                    XP = 10
+                    // This method returns the results of 2 queries, Update the user and return the updated user
+                    // So the result is an array with another array inside
+                    return userModel.updateUserXP(user.userId, (XP + 10))
+                    .then(result =>{
+                        // Only the user object of the whole response is needed
+                        updatedUser = result[1][0]
+                        return activityLogModel.createActivityLog(user,artwork[0])
+                    })
+                    .catch(err => { 
+                        console.log(err) 
+                        res.send({ errorCode: 500, errorMessage: err.message })
+                    })
+                }else {
+                    console.log('*** No XP');
+                    XP = 0
+                    // This method returns the results of 2 queries, Update the user and return the updated user
+                    // So the result is an array with another array inside
+                    return userModel.updateUserXP(user.userId, (XP + 0))
+                    .then(result =>{
+                        // Only the user object of the whole response is needed
+                        updatedUser = result[1][0]
+                        return activityLogModel.createActivityLog(updatedUser,artwork[0])
+                    })
+                    .catch(err => { 
+                        console.log(err) 
+                        res.send({ errorCode: 500, errorMessage: err.message })
+                    })
+                    
+                }
+
+            })
+            .then(result =>{
+
+                // let finalResponse
+
+                artwork[0].artworkDetails = detailsArray
+                // finalResponse.user = updatedUser
+
+                let data = {
+                    'artwork': artwork[0],
+                    'user': updatedUser
+                }
+                
+
+                res.send({ 'data': data})
 
             })
             .catch(err => { 
