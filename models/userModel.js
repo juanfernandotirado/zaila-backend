@@ -46,7 +46,7 @@ exports.getUserById = (userId) => {
     return query(cp, options);
 }
 
-exports.getUserFromEmail = (email) => {
+exports.getUserFromEmail = (email) => {    
     let options = { sql: 
         `SELECT userId FROM user
         where email = ${cp.escape(email)}`
@@ -55,3 +55,16 @@ exports.getUserFromEmail = (email) => {
     return query(cp, options);
 }
 
+exports.updateUserXP = (userId, XP) => {
+
+    console.log('*** Update User Reached ***');
+
+    let sql = `UPDATE user 
+    SET userXP = userXP + ${cp.escape(XP)}
+    WHERE userId = ${cp.escape(userId)};
+    SELECT *
+    FROM user
+    WHERE userId = ${cp.escape(userId)}`
+
+    return query(cp, sql);
+}

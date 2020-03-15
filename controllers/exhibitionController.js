@@ -9,7 +9,9 @@ exports.getAllExhibition = (req, res) => {
     let search = req.query.search
     let exhibitionId = req.params.exhibitionId
 
-    let userId = 1
+    let userId = req.body.signedUser.userId
+
+    console.log('*** User: ' + userId);   
 
     let exhibitionArray = []
 
@@ -31,6 +33,8 @@ exports.getAllExhibition = (req, res) => {
     .then(result =>{
 
         if(exhibitionId && userId){
+
+            console.log('*** User: ' + userId)
 
             let artworkCount
 

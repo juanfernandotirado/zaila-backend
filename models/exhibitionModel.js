@@ -102,7 +102,7 @@ exports.getTappedArtworks = (exhibitionId, userId) => {
     console.log('**** Get Tapped Artworks in Exhibition ****');
 
     let sql = `SELECT COUNT (*) AS artworksTapped FROM activityLog 
-    WHERE exhibitionId = ${cp.escape(exhibitionId)} AND ${cp.escape(userId)}`
+    WHERE exhibitionId = ${cp.escape(exhibitionId)} AND userId = ${cp.escape(userId)}`
 
     console.log("Exhibition Categories: " + sql)
     return query(cp, sql)
