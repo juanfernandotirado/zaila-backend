@@ -52,7 +52,8 @@ exports.signInUser = (req, res) => {
                 //console.log('---->', user)
 
                 const token = jwt.sign({ 
-                    sub: user
+                    sub: user,
+                    iss: 'Zaila'
                 }, process.env.SECRET_PHRASE, {expiresIn: process.env.TOKEN_EXPIRATION});
                 //console.log(token)
 
@@ -91,7 +92,6 @@ exports.validateUser = [
         body('user', 'user object is mandatory').exists(),
         body('user.name', 'name is mandatory').not().isEmpty(),
         body('user.preferredLanguage', 'preferred Language is mandatory').not().isEmpty(),
-        body('user.ageGroup', 'ageGroup is mandatory').not().isEmpty(),
         body('user.email', 'email is mandatory').normalizeEmail().isEmail().bail(),
         body('user.email', 'email is already registered').custom((value, { req }) => {
             
@@ -109,7 +109,7 @@ exports.validateUser = [
                 return true;
         }),
 
-        body('user.password', 'password is mandatory').exists().bail().not().isEmpty(),
+        //body('user.password', 'password is mandatory').exists().bail().not().isEmpty(),
         body('user.autoPlayDescription').customSanitizer(value => value ? value : '1'),
         body('user.autoEnrollQuest').customSanitizer(value => value ? value : '1'),
 
@@ -118,5 +118,5 @@ exports.validateUser = [
     exports.validateLogin = [
         
         body('email', 'email is mandatory').exists().bail().isEmail(),
-        body('password', 'password is mandatory').exists().bail().not().isEmpty(),
+        //body('password', 'password is mandatory').exists().bail().not().isEmpty(),
     ]
