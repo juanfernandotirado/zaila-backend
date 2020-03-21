@@ -12,7 +12,8 @@ exports.createUser = (user) => {
             email, 
             autoPlayDescription, 
             autoEnrollQuest, 
-            userXP) 
+            userXP,
+            profileUrl) 
             VALUES (
                 ${cp.escape(user.ageGroup)}, 
                 ${cp.escape(user.preferredLanguage)}, 
@@ -21,19 +22,22 @@ exports.createUser = (user) => {
                 ${cp.escape(user.email)}, 
                 ${cp.escape(user.autoPlayDescription)}, 
                 ${cp.escape(user.autoEnrollQuest)}, 
-                ${cp.escape(0)})`
+                ${cp.escape(0)},
+                ${cp.escape(user.profileUrl)})`
     , nestTables: true };
 
     return query(cp, options);
 }
 
 exports.getUserFromCredentials = (email, password) => {
+    let passwd = `and password = ${cp.escape(password)}`
     let options = { sql: 
-        `SELECT userId, preferredLanguage, name, email, autoPlayDescription, autoEnrollQuest, userXP FROM user
+        `SELECT userId, preferredLanguage, name, email, autoPlayDescription, autoEnrollQuest, userXP, profileUrl FROM user
         where email = ${cp.escape(email)}
-        and password = ${cp.escape(password)}`
+        ${password ? passwd : ''}`
     , nestTables: true };
 
+    //console.log(options.sql)
     return query(cp, options);
 }
 
