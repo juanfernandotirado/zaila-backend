@@ -92,7 +92,7 @@ exports.validateUser = [
         body('user', 'user object is mandatory').exists(),
         body('user.name', 'name is mandatory').not().isEmpty(),
         body('user.preferredLanguage', 'preferred Language is mandatory').not().isEmpty(),
-        body('user.email', 'email is mandatory').normalizeEmail().isEmail().bail(),
+        body('user.email', 'email is mandatory').isEmail().bail(),
         body('user.email').custom((value, { req }) => {
             
                 userModel.getUserFromEmail(value)
@@ -110,7 +110,7 @@ exports.validateUser = [
         }),
 
         body('user.password').custom((value, { req }) => {
-            console.log('---->', req.body.user)
+            //console.log('---->', req.body.user)
             if (req.body.user.iss != 'Google') {
                 if (!value) {
                     console.log("password is mandatory")
