@@ -41,12 +41,14 @@ exports.validateGoogleToken = (req, res, next) => {
                                 email : decodedPayload.email,
                                 preferredLanguage : 'en-US',
                                 name : decodedPayload.name,
-                                profileUrl : decodedPayload.picture
+                                profileUrl : decodedPayload.picture,
+                                iss: 'Google'
                               }
                               
                         } else {
                             req.body = {
-                                email: decodedPayload.email
+                                email: decodedPayload.email,
+                                iss: 'Google'
                             }
                             
                         }
