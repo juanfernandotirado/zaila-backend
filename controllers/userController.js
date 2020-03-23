@@ -93,14 +93,14 @@ exports.validateUser = [
         body('user.name', 'name is mandatory').not().isEmpty(),
         body('user.preferredLanguage', 'preferred Language is mandatory').not().isEmpty(),
         body('user.email', 'email is mandatory').normalizeEmail().isEmail().bail(),
-        body('user.email', 'email is already registered').custom((value, { req }) => {
+        body('user.email').custom((value, { req }) => {
             
                 userModel.getUserFromEmail(value)
                 .then(result => {
                     //console.log('email', result)
                     if (result.length > 0) {
                         console.log("email already exists")
-                        throw new Error('email is already registered 2');
+                        throw new Error('email is already registered');
                     }
                 })
                 .catch(error => {
@@ -109,7 +109,16 @@ exports.validateUser = [
                 return true;
         }),
 
-        //body('user.password', 'password is mandatory').exists().bail().not().isEmpty(),
+        body('user.password').custom((value, { req }) => {
+            console.log('---->', req.body.user)
+            if (req.body.user.iss != 'Google') {
+                if (!value) {
+                    console.log("password is mandatory")
+                    throw new Error("password is mandatory");
+                }
+            }
+            return true;
+        }),
         body('user.autoPlayDescription').customSanitizer(value => value ? value : '1'),
         body('user.autoEnrollQuest').customSanitizer(value => value ? value : '1'),
 
@@ -118,5 +127,13 @@ exports.validateUser = [
     exports.validateLogin = [
         
         body('email', 'email is mandatory').exists().bail().isEmail(),
-        //body('password', 'password is mandatory').exists().bail().not().isEmpty(),
+        body('password').custom((value, { req }) => {
+            if (req.body.iss != 'Google') {
+                if (!value) {
+                    console.log("password is mandatory")
+                    throw new Error("password is mandatory");
+                }
+            }
+            return true;
+        }),
     ]
